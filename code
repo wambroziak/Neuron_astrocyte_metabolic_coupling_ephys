@@ -1,0 +1,988 @@
+library(readxl)
+library(tidyverse)
+library(ggpubr)
+library(xlsx)
+# Open and modify data #####
+sheets_WT_N <- excel_sheets("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/WT_N_RandomL1.xlsx")#nombres de las paginas de este excel
+WT_N <- lapply(sheets_WT_N, function(x) read_excel("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/WT_N_RandomL1.xlsx", sheet = x)) 
+#lapply repeats the function readexcel for all values X, in this case the sheet names
+WT_N <- plyr::ldply(WT_N, data.frame) %>%
+  mutate(Mouse.cell = paste(Genotype, Treatment, Animal, Cell, sep="/")) %>%
+  mutate(Case = "WT_naive")
+# plyr package, function ldplyr. Applies a function (In this case not defined, "NULL", y and combines results in a df)
+#split list into a dataframe
+#here we repeat all the same for the other excel file
+sheets_WT_CFA_10D <- excel_sheets("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/WT_10D_CFA_RandomL1.xlsx")#nombres de las paginas de este excel
+WT_10_CFA <- lapply(sheets_WT_CFA_10D, function(x) read_excel("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/WT_10D_CFA_RandomL1.xlsx", sheet = x)) 
+WT_10_CFA <- plyr::ldply(WT_10_CFA, data.frame) %>%
+  mutate(Mouse.cell = paste(Genotype, Treatment, Animal, Cell, sep="/")) %>%
+  mutate(Case = "WT_CFA")
+
+sheets_KO_N <- excel_sheets("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/sheets from Seba/KO_N_RandomL1.xlsx")#nombres de las paginas de este excel
+KO_N <- lapply(sheets_KO_N, function(x) read_excel("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/sheets from Seba/KO_N_RandomL1.xlsx", sheet = x)) 
+KO_N <- plyr::ldply(KO_N, data.frame) %>%
+  mutate(Mouse.cell = paste(Genotype, Treatment, Animal, Cell, sep="/")) %>%
+  mutate(Case = "KO_naive")
+
+sheets_KO_CFA_10D <- excel_sheets("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/sheets from Seba/KO_10D_CFA_RandomL1.xlsx")#nombres de las paginas de este excel
+KO_CFA_10D <- lapply(sheets_KO_CFA_10D, function(x) read_excel("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/sheets from Seba/KO_10D_CFA_RandomL1.xlsx", sheet = x)) 
+KO_CFA_10D <- plyr::ldply(KO_CFA_10D, data.frame) %>%
+  mutate(Mouse.cell = paste(Genotype, Treatment, Animal, Cell, sep="/")) %>%
+  mutate(Case = "KO_CFA")
+
+sheets_WT_10D_CFA_4CIN <- excel_sheets("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/WT_10D_CFA_4CIN.xlsx")#nombres de las paginas de este excel
+WT_10D_CFA_4CIN <- lapply(sheets_WT_10D_CFA_4CIN, function(x) read_excel("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/WT_10D_CFA_4CIN.xlsx", sheet = x)) 
+WT_10D_CFA_4CIN <- plyr::ldply(WT_10D_CFA_4CIN, data.frame) %>%
+  mutate(Mouse.cell = paste(Genotype, Treatment, Animal, Cell, sep="/")) %>%
+  mutate(Case = "WT_CFA_4CIN")
+
+sheets_WT_N_Lactate <- excel_sheets("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/WT_N_Lactate.xlsx")#nombres de las paginas de este excel
+WT_N_Lactate <- lapply(sheets_WT_N_Lactate, function(x) read_excel("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/WT_N_Lactate.xlsx", sheet = x)) 
+WT_N_Lactate <- plyr::ldply(WT_N_Lactate, data.frame) %>%
+  mutate(Mouse.cell = paste(Genotype, Treatment, Animal, Cell, sep="/")) %>%
+  mutate(Case = "WT_naive_Lactate")
+
+sheets_WT_N_4CIN <- excel_sheets("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/WT_N_4CIN.xlsx")#nombres de las paginas de este excel
+WT_N_4CIN <- lapply(sheets_WT_N_4CIN, function(x) read_excel("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/WT_N_4CIN.xlsx", sheet = x)) 
+WT_N_4CIN <- plyr::ldply(WT_N_4CIN, data.frame) %>%
+  mutate(Mouse.cell = paste(Genotype, Treatment, Animal, Cell, sep="/")) %>%
+  mutate(Case = "WT_naive_4CIN")
+
+sheets_KO_N_Lactate <- excel_sheets("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/sheets from Seba/KO_N_Lactate.xlsx")#nombres de las paginas de este excel
+KO_N_Lactate <- lapply(sheets_KO_N_Lactate, function(x) read_excel("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/sheets from Seba/KO_N_Lactate.xlsx", sheet = x)) 
+KO_N_Lactate <- plyr::ldply(KO_N_Lactate, data.frame) %>%
+  mutate(Mouse.cell = paste(Genotype, Treatment, Animal, Cell, sep="/")) %>%
+  mutate(Case = "KO_naive_Lactate")
+
+sheets_KO_10D_CFA_Lactate <- excel_sheets("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/sheets from Seba/KO_10D_CFA_Lactate.xlsx")#nombres de las paginas de este excel
+KO_10D_CFA_Lactate <- lapply(sheets_KO_10D_CFA_Lactate, function(x) read_excel("C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/sheets from Seba/KO_10D_CFA_Lactate.xlsx", sheet = x)) 
+KO_10D_CFA_Lactate <- plyr::ldply(KO_10D_CFA_Lactate, data.frame) %>%
+  mutate(Mouse.cell = paste(Genotype, Treatment, Animal, Cell, sep="/")) %>%
+  mutate(Case = "KO_CFA_Lactate")
+
+Rheo_all<- bind_rows(WT_N_Lactate, WT_N_4CIN, WT_10D_CFA_4CIN, .id = "df")
+
+Rheo_KO <- bind_rows(KO_N, KO_CFA_10D, KO_N_Lactate, KO_10D_CFA_Lactate) %>%
+  select(Mouse.cell, Case, Step, Current_pA, Time_of_peak) %>%
+  filter(Time_of_peak != "NA") %>%
+  mutate(unique_id = paste(Case, Mouse.cell, sep="---")) %>%
+  group_by(unique_id) %>%
+  mutate(Rheobase = min(Current_pA)) %>%
+  mutate(diff = Current_pA - Rheobase) %>%
+  ungroup() %>%
+  filter(diff %in% numbers) %>%
+  group_by(unique_id, diff) %>%
+  mutate(Frequency = n()) %>%
+#  count(name = "Frequency") %>%
+  transform(Frequency = Frequency / 0.5)
+write.csv(Rheo_KO,"C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/Rheo_KO_Cond_Freq.csv", row.names = FALSE)
+
+
+Rheo_rest <- Rheo_WTKO1 %>%
+  filter( Case == "KO_naive" | Case == "KO_CFA")
+
+`%notin%` <- Negate(`%in%`)
+
+WT_names<- as.data.frame(unique(WT_N$Mouse.cell))
+WT_names_1 <- WT_names %>%
+  sample_n(18)
+WT_names_2 <- WT_names %>%
+  filter(WT_names[,1] %notin% WT_names_1[,1])
+
+WT_N_1 <- WT_N %>%
+  filter(Mouse.cell %in% WT_names_1[,1])
+WT_N_2 <- WT_N %>%
+  filter(Mouse.cell %in% WT_names_2[,1])
+
+WTcfa_names<- as.data.frame(unique(WT_10_CFA$Mouse.cell))
+WTcfa_names_1 <- WTcfa_names %>%
+  sample_n(20)
+WTcfa_names_2 <- WTcfa_names %>%
+  filter(WTcfa_names[,1] %notin% WTcfa_names_1[,1])
+
+WT_10_CFA_1 <- WT_10_CFA %>%
+  filter(Mouse.cell %in% WTcfa_names_1[,1])
+WT_10_CFA_2 <- WT_10_CFA %>%
+  filter(Mouse.cell %in% WTcfa_names_2[,1])
+
+KO_names<- as.data.frame(unique(KO_N$Mouse.cell))
+KO_names_1 <- KO_names %>%
+  sample_n(18)
+KO_names_2 <- KO_names %>%
+  filter(KO_names[,1] %notin% KO_names_1[,1])
+
+KO_N_1 <- KO_N %>%
+  filter(Mouse.cell %in% KO_names_1[,1])
+KO_N_2 <- KO_N %>%
+  filter(Mouse.cell %in% KO_names_2[,1])
+
+KOcfa_names<- as.data.frame(unique(KO_CFA_10D$Mouse.cell))
+KOcfa_names_1 <- KOcfa_names %>%
+  sample_n(20)
+KOcfa_names_2 <- KOcfa_names %>%
+  filter(KOcfa_names[,1] %notin% KOcfa_names_1[,1])
+
+KO_10_CFA_1 <- KO_CFA_10D %>%
+  filter(Mouse.cell %in% KOcfa_names_1[,1])
+KO_10_CFA_2 <- KO_CFA_10D %>%
+  filter(Mouse.cell %in% KOcfa_names_2[,1])
+
+Rheo_WTKO<- bind_rows(WT_N_1, WT_10_CFA_1, KO_N_1, KO_10_CFA_1, .id = "df")
+write.csv(Rheo_WTKO,"C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/Rheo_WTKO_1.csv", row.names = FALSE)
+Rheo_WTKO1<- bind_rows(WT_N_2, WT_10_CFA_2, KO_N_2, KO_10_CFA_2, .id = "df")
+write.csv(Rheo_WTKO1,"C:/Users/Wojciech Ambroziak/Desktop/Seba_rheobase/Rheo_WTKO_2.csv", row.names = FALSE)
+#Rheo_KO<- bind_rows(KO_N_1, KO_10_CFA_1, .id = "df")
+
+
+#binding dataframes and adding a column with the df from which they come
+
+Rheo_sub <- Rheo_WT_cond.used.for.plot.Fig.6 %>%
+#  filter(grepl("WT", Case)) %>%
+#  select(Mouse.cell, Case, Step, Current_pA, Time_of_peak) %>%
+#  filter(Time_of_peak != "NA") %>%
+  group_by(Case, Mouse.cell) %>%
+  summarize(Rheobase = mean(Rheobase)) %>%
+  filter(Rheobase > -1) %>%
+  mutate(Genotype = case_when(grepl("KO", Case) ~ "KO",
+                   grepl("WT", Case) ~ "WT"))
+
+write.csv(Rheo_sub,"C:/Users/Wojciech Ambroziak/Desktop/WT_cond_rheobase.csv", row.names = FALSE)
+
+
+level_order_WT <- c("WT_naive", "WT_naive_Lactate", "WT_naive_4CIN", "WT_CFA", "WT_CFA_4CIN")
+level_order_WT <- c("WT_naive", "WT_CFA", "KO_naive", "KO_CFA")
+
+Rheo_sub_WT <- Rheo_sub %>%
+  filter(Genotype == "WT") %>%
+  filter(Rheobase < 150)  %>%
+  group_by(Case) %>%
+  summarise(mean_f = mean(Rheobase), sd_f = sd(Rheobase), n = n()) %>%
+  mutate(se = sd_f / (sqrt(n)))
+
+
+res.aov1 <- aov(Rheobase ~ Case, data = Rheo_sub)
+summary(res.aov1)
+TukeyHSD(res.aov1)
+
+Rheo_sub_KO <- Rheo_sub %>%
+  filter(Genotype == "KO")
+
+level_order_KO <- c("KO_naive", "KO_naive_Lactate", "KO_CFA", "KO_CFA_Lactate")
+
+res.aov2 <- aov(Rheobase ~ Case, data = Rheo_sub)
+summary(res.aov2)
+TukeyHSD(res.aov2)
+
+res.aov2 <- aov(Frequency2 ~ Case, data = Rheo_KO_cond2)
+summary(res.aov2)
+TukeyHSD(res.aov2)
+  
+ggplot(data = Rheo_KO_cond2, aes(x = factor(Case, level = level_order_KO), y = Frequency2, 
+                                    fill = Case)) + 
+  geom_boxplot(position=position_dodge(0.9), colour = "grey20", alpha = 0.2) +
+  geom_dotplot(alpha = 0.5, color = "black", binaxis='y', stackdir='center',
+               position=position_jitterdodge(jitter.width=.2,  # <<- adjusted
+                                             dodge.width=0.9),  binwidth = .7, dotsize = 3) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5, size = 15, color = "grey20", face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = .5, hjust = .5, vjust = .5, face = "plain"),  
+        axis.title.x = element_text(color = "white", size = 15, angle = .5, hjust = .5, vjust = .5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 15, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        strip.text.x = element_text(size = 12, colour = "black", angle = 0),
+        strip.background = element_rect(
+          color="grey", fill="white", size=1.5, linetype="solid"
+        ),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold'),
+        title =element_text(size=13.5)) +
+  theme(legend.position="none") +
+#  scale_fill_manual(values=c("red", "purple", "orange", "purple")) +
+  #  ggtitle("Baseline potential - Verapamil") +
+  #  theme(plot.title = element_text(hjust=0.5, size = 16, face = "bold")) +
+#  ylim(0, 100) +
+#  ylab("Rheobase current [pA] \n")
+  ylab("AP frequency 50 pA above rheobase [Hz] \n")
+
+#%>%
+#  mutate(Mouse.cell = paste(Genotype, Treatment, Animal, Cell, sep="/"))
+#adding a column with cell*mouse*treatment identifier
+
+
+####################################################################################################
+####################################################################################################
+###############################       PLOTTING WTs              ####################################
+####################################################################################################
+####################################################################################################
+Rheo_WTKO11 <- as.tibble(Rheo_WTKO_1)
+Rheo_WTKO22 <- as.tibble(Rheo_WTKO_2)
+
+Rheo_wide <- Rheo_WTKO11 %>%
+  filter(Genotype == "WT") %>%
+  select(Mouse.cell, Case, Step, Current_pA, Time_of_peak) %>%
+  filter(Time_of_peak != "NA") %>%
+  filter(Case == "WT_naive" | Case == "WT_CFA") %>% 
+  group_by(Mouse.cell) %>%
+  mutate(Rheobase = min(Current_pA)) %>%
+#  group_by(Case, Mouse.cell) %>%
+#  summarise(Rheo = mean(Rheobase)) %>%
+  mutate(diff = Current_pA - Rheobase) %>%
+  ungroup() %>%
+  group_by(Case, Step, diff, Mouse.cell) %>%
+  count(name = "Frequency") %>%
+  transform(Frequency = Frequency / 0.5) %>%
+  ungroup() %>%
+#  group_by(Case, diff) %>%
+#  summarise(mean_f = mean(Frequency), sd_f = sd(Frequency), n = n()) %>%
+#  mutate(se = sd_f / (sqrt(n))) %>%
+  filter(diff %in% numbers)
+
+write.csv(Rheo_wide,"C:/Users/Wojciech Ambroziak/Desktop/XXX.csv", row.names = FALSE)
+
+t.test(Rheo ~ Case, Rheo_wide)
+
+numbers <- c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120)
+
+ggplot(Rheo_wide, aes(x=diff, y = mean_f, color = Case, group = Case)) +
+  #  geom_smooth(aes(color=Treatment), size = .5) +
+  #  geom_ribbon(aes(ymin = mean_f - se, ymax = mean_f + se), fill = "grey70", alpha = 0.7, color = "grey70", outline.type = "both") +
+  geom_smooth(color="black", size=.7, se=FALSE) +
+  geom_point(size=3.5) +
+  geom_errorbar(aes(ymin = mean_f - se, ymax = mean_f + se), width=5,
+                position=position_dodge(0.05), color = "black") +
+  #  facet_wrap(~Genotype) +
+  theme_classic() +
+  theme(legend.position=c(0.4, 0.2)) +
+  theme(axis.text.x = element_text(color = "grey20", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = 0, hjust =.5, vjust = 0.5, face = "plain"),  
+        axis.title.x = element_text(color = "grey20", size = 14, angle = 0, hjust = .5, vjust = 0.5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 14, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold', color = "white"),
+        title =element_text(size=13.5, face='bold')) +
+  geom_hline(yintercept = 0, color = "grey") +
+  geom_vline(xintercept = 0, color = "grey") +
+  #  scale_color_manual(labels = c("Accli", "Non-accli"), values=c("red", "black")) +
+  #  theme(legend.position='none') +
+  #  ggtitle("Voltage ramp - INa_P") +
+  scale_color_manual(values=c("orange", "skyblue")) +
+  ylab("Firing frequency [1/s] \n") +
+  xlab("\n Current from rheobase [pA]")
+  
+res.aov <- aov(Frequency ~ Case * diff, data = Rheo_wide)
+summary(res.aov)
+####################################################################################################
+####################################################################################################
+###############################               END               ####################################
+####################################################################################################
+####################################################################################################
+----------------------------------------------------------------------------------------------------
+  ####################################################################################################
+####################################################################################################
+###############################       PLOTTING KOs              ####################################
+####################################################################################################
+####################################################################################################
+
+
+Rheo_wide <- Rheo_WTKO11 %>%
+  filter(Genotype == "KO") %>%
+  select(Mouse.cell, Case, Step, Current_pA, Time_of_peak) %>%
+  filter(Time_of_peak != "NA") %>%
+  filter(Case == "KO_naive" | Case == "KO_CFA") %>% 
+  group_by(Mouse.cell) %>%
+  mutate(Rheobase = min(Current_pA)) %>%
+#  group_by(Case, Mouse.cell) %>%
+#  summarise(Rheo = mean(Rheobase))
+  mutate(diff = Current_pA - Rheobase) %>%
+  ungroup() %>%
+  group_by(Case, Step, diff, Mouse.cell) %>%
+  count(name = "Frequency") %>%
+  transform(Frequency = Frequency / 0.5) %>%
+  ungroup() %>%
+  group_by(Case, diff) %>%
+  summarise(mean_f = mean(Frequency), sd_f = sd(Frequency), n = n()) %>%
+  mutate(se = sd_f / (sqrt(n))) %>%
+  filter(diff %in% numbers)
+
+write.csv(Rheo_wide,"C:/Users/Wojciech Ambroziak/Desktop/XXX.csv", row.names = FALSE)
+
+
+numbers <- c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120)
+
+ggplot(Rheo_wide, aes(x=diff, y = mean_f, color = Case, group = Case)) +
+  #  geom_smooth(aes(color=Treatment), size = .5) +
+  #  geom_ribbon(aes(ymin = mean_f - se, ymax = mean_f + se), fill = "grey70", alpha = 0.7, color = "grey70", outline.type = "both") +
+  geom_smooth(color="black", size=.7, se=FALSE) +
+  geom_point(size=3.5) +
+  geom_errorbar(aes(ymin = mean_f - se, ymax = mean_f + se), width=5,
+                position=position_dodge(0.05), color = "black") +
+  #  facet_wrap(~Genotype) +
+  theme_classic() +
+  theme(legend.position=c(0.4, 0.2)) +
+  theme(axis.text.x = element_text(color = "grey20", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = 0, hjust =.5, vjust = 0.5, face = "plain"),  
+        axis.title.x = element_text(color = "grey20", size = 14, angle = 0, hjust = .5, vjust = 0.5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 14, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold', color = "white"),
+        title =element_text(size=13.5, face='bold')) +
+  geom_hline(yintercept = 0, color = "grey") +
+  geom_vline(xintercept = 0, color = "grey") +
+  #  scale_color_manual(labels = c("Accli", "Non-accli"), values=c("red", "black")) +
+  #  theme(legend.position='none') +
+  #  ggtitle("Voltage ramp - INa_P") +
+  scale_color_manual(values=c("orange", "red")) +
+  ylab("Firing frequency [1/s] \n") +
+  ylim(0, 25) +
+  xlab("\n Current from rheobase [pA]")
+
+res.aov <- aov(Frequency ~ Case * diff, data = Rheo_wide)
+summary(res.aov)
+####################################################################################################
+####################################################################################################
+###############################               END               ####################################
+####################################################################################################
+####################################################################################################
+----------------------------------------------------------------------------------------------------
+####################################################################################################
+####################################################################################################
+###############################       PLOTTING WTs vs KOs       ####################################
+####################################################################################################
+####################################################################################################
+
+
+Rheo_wide <- Rheo_all %>%
+  select(Mouse.cell, Case, Step, Current_pA, Time_of_peak) %>%
+  filter(Time_of_peak != "NA") %>%
+  filter(Case == "KO_naive" | Case == "KO_CFA" | Case == "WT_naive" | Case == "WT_CFA") %>% 
+  group_by(Mouse.cell) %>%
+  mutate(Rheobase = min(Current_pA)) %>%
+  mutate(diff = Current_pA - Rheobase) %>%
+  ungroup() %>%
+  group_by(Case, Step, diff, Mouse.cell) %>%
+  count(name = "Frequency") %>%
+  transform(Frequency = Frequency / 0.5) %>%
+  ungroup() %>%
+  group_by(Case, diff) %>%
+  summarise(mean_f = mean(Frequency), sd_f = sd(Frequency), n = n()) %>%
+  mutate(se = sd_f / (sqrt(n))) %>%
+  filter(diff %in% numbers) %>%
+  mutate(geno =case_when(grepl("WT", Case) ~ "1_WT",
+                         grepl("KO", Case) ~ "2_KO"))
+
+ggplot(Rheo_wide, aes(x=diff, y = mean_f, color = Case, group = Case)) +
+  #  geom_smooth(aes(color=Treatment), size = .5) +
+  #  geom_ribbon(aes(ymin = mean_f - se, ymax = mean_f + se), fill = "grey70", alpha = 0.7, color = "grey70", outline.type = "both") +
+  geom_smooth(color="black", size=.7, se=FALSE) +
+  geom_point(size=3.5) +
+  geom_errorbar(aes(ymin = mean_f - se, ymax = mean_f + se), width=5,
+                position=position_dodge(0.05), color = "black") +
+  facet_wrap(~geno) +
+  theme_classic() +
+  theme(legend.position=c(0.4, 0.2)) +
+  theme(axis.text.x = element_text(color = "grey20", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = 0, hjust =.5, vjust = 0.5, face = "plain"),  
+        axis.title.x = element_text(color = "grey20", size = 14, angle = 0, hjust = .5, vjust = 0.5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 14, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold', color = "white"),
+        title =element_text(size=13.5, face='bold')) +
+  geom_hline(yintercept = 0, color = "grey") +
+  geom_vline(xintercept = 0, color = "grey") +
+  #  scale_color_manual(labels = c("Accli", "Non-accli"), values=c("red", "black")) +
+  #  theme(legend.position='none') +
+  #  ggtitle("Voltage ramp - INa_P") +
+  ylab("Firing frequency [1/s] \n") +
+  xlab("\n Current from rheobase [pA]")
+
+
+####################################################################################################
+####################################################################################################
+###############################               END               ####################################
+####################################################################################################
+####################################################################################################
+----------------------------------------------------------------------------------------------------
+####################################################################################################
+####################################################################################################
+###############################    PLOTTING WT conditions       ####################################
+####################################################################################################
+####################################################################################################
+p2 <- Rheo_WTKO %>%
+  select(Mouse.cell, Case, Step, Current_pA, Time_of_peak) %>%
+  filter(grepl("WT", Case))
+
+p3 <- Rheo_WTKO1 %>%
+  select(Mouse.cell, Case, Step, Current_pA, Time_of_peak) %>%
+  filter(grepl("WT", Case))
+
+Rheo_WT_cond <- Rheo_all %>%
+  select(Mouse.cell, Case, Step, Current_pA, Time_of_peak) %>%
+  rbind(p2, p3) %>%
+#  filter(Case == "WT_naive") %>%
+  filter(Mouse.cell != "WT/Naive/2/6" & Mouse.cell != "WT/Naive/2/2") %>%
+  filter(Mouse.cell != "WT/Naive/3/8" & Mouse.cell != "WT/Naive/4/8") %>%
+  filter(Time_of_peak != "NA") %>%
+  filter(grepl("WT", Case)) %>% 
+  mutate(unique_id = paste(Case, Mouse.cell, sep="---")) %>%
+  group_by(unique_id) %>%
+  mutate(Rheobase = min(Current_pA)) %>%
+  mutate(diff = Current_pA - Rheobase) %>%
+  ungroup() %>%
+#  group_by(Case, diff, Mouse.cell) %>%
+#  summarize(Frequency = n()) %>%
+  group_by(diff, Mouse.cell) %>%
+  count(name = "Frequency") %>%
+  transform(Frequency = Frequency / 0.5) %>%
+  ungroup() %>%
+#  filter(Mouse.cell == "WT/Naive/NA/3")
+  group_by(Case, unique_id, diff) %>%
+  mutate(Frequency1 = mean(Frequency)) %>%
+  ungroup()
+#  filter(diff == 80)
+#  mutate(Case = case_when(grepl("WT_naive-", unique_id) ~ "WT_naive",
+#                          grepl("WT_CFA-", unique_id) ~ "WT_CFA",
+#                          grepl("WT_naive_Lactate-", unique_id) ~ "WT_naive_Lactate",
+#                          grepl("WT_naive_4CIN-", unique_id) ~ "WT_naive_4CIN",
+#                          grepl("WT_CFA_4CIN-", unique_id) ~ "WT_CFA_4CIN")) %>%
+  group_by(Case, diff) %>%
+  summarise(mean_f = mean(Frequency), sd_f = sd(Frequency), n = n()) %>%
+  mutate(se = sd_f / (sqrt(n))) %>%
+  filter(diff %in% numbers)
+  
+Rheo_WT_cond <- Rheo_WT_cond.used.for.plot.Fig.6 %>%
+#  filter(Case == "WT_CFA") %>%
+#  filter(diff == 100) %>%
+#  filter(Mouse.cell != "WT/CFA_10D/2/1" & Mouse.cell != "WT/CFA_10D/4/1") %>%
+  group_by(Case, unique_id, diff) %>%
+  summarize(Frequency2 = mean(Frequency)) %>%
+  ungroup() %>%
+  filter(diff == 50) %>%
+  filter(Case != "WT_naive_4CIN")
+  spread(Case, Frequency2)
+#  mutate(Case = case_when(grepl("WT_naive-", unique_id) ~ "WT_naive",
+#                          grepl("WT_CFA-", unique_id) ~ "WT_CFA",
+#                          grepl("WT_naive_Lactate-", unique_id) ~ "WT_naive_Lactate",
+#                          grepl("WT_naive_4CIN-", unique_id) ~ "WT_naive_4CIN",
+#                          grepl("WT_CFA_4CIN-", unique_id) ~ "WT_CFA_4CIN")) %>%
+  group_by(Case, diff) %>%
+  summarise(mean_f = mean(Frequency2), sd_f = sd(Frequency2), n = n()) %>%
+  mutate(se = sd_f / (sqrt(n)))
+
+write.csv(Rheo_WT_cond,"C:/Users/Wojciech Ambroziak/Desktop/WT_cond_50pA.csv", row.names = FALSE)
+  
+
+res.aov2 <- aov(Frequency2 ~ Case, data = Rheo_WT_cond)
+summary(res.aov2)
+TukeyHSD(res.aov2, ordered = TRUE)
+  
+ggplot(Rheo_WT_cond, aes(x=diff, y = mean_f, color = Case, group =Case)) +
+  geom_smooth(color="black", size=.7, se=FALSE) +
+  #  geom_ribbon(aes(ymin = mean_f - se, ymax = mean_f + se), fill = "grey70", alpha = 0.7, color = "grey70", outline.type = "both") +
+#  geom_line(size=.7, se=FALSE) +
+#  geom_smooth(color="black", size=.7, se=FALSE) +
+  geom_point(size=3.5) +
+  geom_errorbar(aes(ymin = mean_f - se, ymax = mean_f + se), width=5,
+               position=position_dodge(0.05), color = "black") +
+  #  facet_wrap(~Genotype) +
+  theme_classic() +
+  theme(legend.position=c(0.4, 0.2)) +
+  theme(axis.text.x = element_text(color = "grey20", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = 0, hjust =.5, vjust = 0.5, face = "plain"),  
+        axis.title.x = element_text(color = "grey20", size = 14, angle = 0, hjust = .5, vjust = 0.5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 14, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold', color = "white"),
+        title =element_text(size=13.5, face='bold')) +
+  geom_hline(yintercept = 0, color = "grey") +
+  geom_vline(xintercept = 0, color = "grey") +
+  #  scale_color_manual(labels = c("Accli", "Non-accli"), values=c("red", "black")) +
+  #  theme(legend.position='none') +
+  #  ggtitle("Voltage ramp - INa_P") +
+  ylab("Firing frequency [1/s] \n") +
+  xlab("\n Current from rheobase [pA]")
+
+
+####################################################################################################
+####################################################################################################
+###############################               END               ####################################
+####################################################################################################
+####################################################################################################
+----------------------------------------------------------------------------------------------------
+  ####################################################################################################
+####################################################################################################
+###############################    PLOTTING KO all conditions   ####################################
+####################################################################################################
+####################################################################################################
+p1 <- Rheo_WTKO %>%
+  select(Mouse.cell, Case, Step, Current_pA, Time_of_peak) %>%
+  filter(grepl("KO", Case))
+
+p4 <- Rheo_WTKO %>%
+  select(Mouse.cell, Case, Step, Current_pA, Time_of_peak) %>%
+  filter(grepl("KO", Case))
+
+
+Rheo_KO_cond <- Rheo_KO %>%
+  select(Mouse.cell, Case, Step, Current_pA, Time_of_peak) %>%
+  filter(Time_of_peak != "NA") %>%
+#  filter(grepl("KO", Case)) %>% 
+  mutate(unique_id = paste(Case, Mouse.cell, sep="---")) %>%
+  group_by(unique_id) %>%
+  mutate(Rheobase = min(Current_pA)) %>%
+  mutate(diff = Current_pA - Rheobase) %>%
+  ungroup() %>%
+  filter(diff %in% numbers) %>%
+  group_by(Case, diff, Mouse.cell) %>%
+  mutate(Frequency = n()) %>%
+  transform(Frequency = Frequency / 0.5) %>%
+  ungroup() %>%
+  filter(diff %in% numbers)
+#  mutate(Case = case_when(grepl("KO_naive-", unique_id) ~ "KO_naive",
+#                          grepl("KO_CFA-", unique_id) ~ "KO_CFA",
+#                          grepl("KO_naive_Lactate-", unique_id) ~ "KO_naive_Lactate")) %>%
+  group_by(Case, diff) %>%
+  summarise(mean_f = mean(Frequency), sd_f = sd(Frequency), n = n()) %>%
+  mutate(se = sd_f / (sqrt(n))) %>%
+  filter(diff %in% numbers)
+
+Rheo_KO_cond <- Rheo_KO_Cond_Freq1 %>%
+  group_by(Case, unique_id, diff) %>%
+  summarize(Frequency = mean(Frequency)) %>%
+  ungroup() %>%
+  group_by(Case, diff) %>%
+  summarise(mean_f = mean(Frequency), sd_f = sd(Frequency), n = n()) %>%
+  mutate(se = sd_f / (sqrt(n)))
+
+res.aov2 <- aov(Frequency2 ~ Case, data = Rheo_KO_cond2)
+summary(res.aov2)
+
+Rheo_KO_cond2 <- Rheo_KO_Cond1 %>%
+  group_by(Case, unique_id, diff) %>%
+  summarize(Frequency2 = mean(Frequency)) %>%
+  ungroup() %>%
+  filter(diff == 50)
+#  mutate(Case = case_when(grepl("WT_naive-", unique_id) ~ "WT_naive",
+#                          grepl("WT_CFA-", unique_id) ~ "WT_CFA",
+#                          grepl("WT_naive_Lactate-", unique_id) ~ "WT_naive_Lactate",
+#                          grepl("WT_naive_4CIN-", unique_id) ~ "WT_naive_4CIN",
+#                          grepl("WT_CFA_4CIN-", unique_id) ~ "WT_CFA_4CIN")) %>%
+group_by(Case, diff) %>%
+  summarise(mean_f = mean(Frequency2), sd_f = sd(Frequency2), n = n()) %>%
+  mutate(se = sd_f / (sqrt(n)))
+#
+write.csv(Rheo_KO_cond2,"C:/Users/Wojciech Ambroziak/Desktop/KO_cond_50pA.csv", row.names = FALSE)
+
+
+ggplot(Rheo_KO_cond2, aes(x=diff, y = mean_f, color = Case, group = Case)) +
+  #  geom_smooth(aes(color=Treatment), size = .5) +
+  #  geom_ribbon(aes(ymin = mean_f - se, ymax = mean_f + se), fill = "grey70", alpha = 0.7, color = "grey70", outline.type = "both") +
+  geom_smooth(color="black", size=.7, se=FALSE) +
+  geom_point(size=3.5) +
+  geom_errorbar(aes(ymin = mean_f - se, ymax = mean_f + se), width=5,
+                position=position_dodge(0.05), color = "black") +
+  #  facet_wrap(~Genotype) +
+  theme_classic() +
+  theme(legend.position=c(0.4, 0.2)) +
+  theme(axis.text.x = element_text(color = "grey20", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = 0, hjust =.5, vjust = 0.5, face = "plain"),  
+        axis.title.x = element_text(color = "grey20", size = 14, angle = 0, hjust = .5, vjust = 0.5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 14, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold', color = "white"),
+        title =element_text(size=13.5, face='bold')) +
+  geom_hline(yintercept = 0, color = "grey") +
+  geom_vline(xintercept = 0, color = "grey") +
+  #  scale_color_manual(labels = c("Accli", "Non-accli"), values=c("red", "black")) +
+  #  theme(legend.position='none') +
+  #  ggtitle("Voltage ramp - INa_P") +
+  ylab("Firing frequency [1/s] \n") +
+  xlab("\n Current from rheobase [pA]")
+
+
+####################################################################################################
+####################################################################################################
+###############################               END               ####################################
+####################################################################################################
+####################################################################################################
+----------------------------------------------------------------------------------------------------
+#Rheo_step <- Rheo_wide %>%
+#  transform(Time_of_peak = as.numeric(Time_of_peak)) %>%
+#  group_by(Mouse.cell, Case, Step) %>%
+#  mutate(Mean_time = mean(Time_of_peak))
+
+
+#%>%
+#  count(name = "Frequency") %>%
+
+
+#Calculating the value that equals to 2*SD from group mean
+#Rheobase_summary <- WT_sub %>%
+#  filter(Time_of_peak != "NA" ) %>%
+#  filter(Genotype == "WT") %>%
+#  group_by(Treatment, Animal, Cell)%>%summarise(Rheobase = min(Current_pA))%>%
+#  as.data.frame() %>%
+#  ungroup() %>%
+#  group_by(Treatment) %>%
+#  mutate(sd = sd(Rheobase)) %>%
+#  ungroup() %>%
+#  transform(sd2 = sd * 2) %>%
+#  filter(Rheobase < sd2)
+
+
+#ggplot(Rheobase_summary, aes(x=Treatment, y = Rheobase, color = Treatment, group = Treatment)) +
+#  geom_boxplot()
+
+
+#Calculating frequency at current above Rheobase
+WT_opt <- WT_sub %>%
+  filter(Time_of_peak != "NA") %>%
+  group_by(Mouse.cell) %>%
+  mutate(Rheobase = min(Current_pA)) %>%
+  mutate(diff = Current_pA - Rheobase) %>%
+  ungroup() %>%
+  group_by(Genotype, Treatment, Step, diff, Mouse.cell) %>%
+  count(name = "Frequency") %>%
+  transform(Frequency = Frequency / 0.5) %>%
+  ungroup() %>%
+#  filter(diff < 130) %>%
+  group_by(Case, diff) %>%
+  summarise(mean_f = mean(Frequency), sd_f = sd(Frequency), n = n()) %>%
+  mutate(se = sd_f / (sqrt(n))) %>%
+
+
+numbers <- c(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 110, 120)
+
+
+#Plotting
+ggplot(Rheo_wide, aes(x=diff, y = mean_f, color = Case, group = Case)) +
+#  geom_smooth(aes(color=Treatment), size = .5) +
+#  geom_ribbon(aes(ymin = mean_f - se, ymax = mean_f + se), fill = "grey70", alpha = 0.7, color = "grey70", outline.type = "both") +
+  geom_smooth(color="black", size=.7, se=FALSE) +
+  geom_point(size=3.5) +
+  geom_errorbar(aes(ymin = mean_f - se, ymax = mean_f + se), width=5,
+                position=position_dodge(0.05), color = "black") +
+#  facet_wrap(~Genotype) +
+  theme_classic() +
+  theme(legend.position=c(0.4, 0.2)) +
+  theme(axis.text.x = element_text(color = "grey20", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = 0, hjust =.5, vjust = 0.5, face = "plain"),  
+        axis.title.x = element_text(color = "grey20", size = 14, angle = 0, hjust = .5, vjust = 0.5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 14, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold', color = "white"),
+        title =element_text(size=13.5, face='bold')) +
+  geom_hline(yintercept = 0, color = "grey") +
+  geom_vline(xintercept = 0, color = "grey") +
+  #  scale_color_manual(labels = c("Accli", "Non-accli"), values=c("red", "black")) +
+  #  theme(legend.position='none') +
+  #  ggtitle("Voltage ramp - INa_P") +
+  ylab("Firing frequency [1/s] \n") +
+  xlab("\n Current from rheobase [pA]")
+  
+  
+#ggplot(WT_opt, aes(x=Treatment, y = Rheobase, color = Treatment, group = Treatment)) +
+#  geom_boxplot()
+#  geom_smooth(aes(color=Treatment), size = .5) +
+#  geom_ribbon(aes(ymin = mean_f - se, ymax = mean_f + se), fill = "grey70", alpha = 0.7, color = "grey70", outline.type = "both") +
+#  geom_line(aes(color=Treatment), size = .5) +
+
+  
+# 2-way ANOVA stats, filter by genotyope/ treatment first so that there are 2 groups only
+WT_stat <- WT_opt %>%
+#  filter( fill in here ) %>%
+  transform(diff = as.character(diff))
+#diff is a number but for statictics it needs to be a character / factor
+
+res.aov2 <- aov(Frequency ~ Treatment * diff, data = WT_stat)
+summary(res.aov2)
+# this tells you if ANOVA is significant or not
+
+#You can do a post hoc test but not sure if needed
+a<- TukeyHSD(res.aov2, which = "Treatment:diff", ordered = TRUE)
+plot(TukeyHSD(res.aov2, which = "Treatment:diff"))
+
+
+Rm <- Book2 %>%
+  gather(Case, Rm, 1:4) %>%
+  filter(Rm != "NA") %>%
+  mutate(Genotype = case_when(grepl("KO", Case) ~ "KO",
+                              grepl("WT", Case) ~ "WT")) %>%
+  group_by(Case) %>%
+  summarise(mean_f = mean(Rm), sd_f = sd(Rm), n = n()) %>%
+  mutate(se = sd_f / (sqrt(n)))
+  filter(Genotype == "KO")
+
+ggplot(data = Rm, aes(x = factor(Case, level = level_order_KO), y = Rm, 
+                               fill = Case)) + 
+  geom_boxplot(position=position_dodge(0.9), colour = "grey20", alpha = 0.2) +
+  geom_dotplot(alpha = 0.5, color = "black", binaxis='y', stackdir='center',
+               position=position_jitterdodge(jitter.width=.2,  # <<- adjusted
+                                             dodge.width=0.9),  binwidth = .7, dotsize = 30) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5, size = 15, color = "grey20", face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),  
+        axis.title.x = element_text(color = "white", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 15, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        strip.text.x = element_text(size = 12, colour = "black", angle = 0),
+        strip.background = element_rect(
+          color="grey", fill="white", size=1.5, linetype="solid"
+        ),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold'),
+        title =element_text(size=13.5)) +
+  theme(legend.position="none") +
+  scale_fill_manual(values=c("red", "orange")) +
+  #  ggtitle("Baseline potential - Verapamil") +
+  #  theme(plot.title = element_text(hjust=0.5, size = 16, face = "bold")) +
+  ylim(100, 1000) +
+  ylab("Membrane resistance [MOhm] \n")
+
+
+epsc <- synaptic_currents_all %>%
+  mutate(Genotype = case_when(grepl("KO", Case) ~ "KO",
+                              grepl("WT", Case) ~ "WT"))
+
+level_order_epsc <- c("WT", "WT_CFA", "KO", "KO_CFA")
+
+
+epsc_nk1r <- epsc %>%
+  filter(Cond == "NK1R_sEPSC") %>%
+  filter(Amplitude < 50)
+
+ggplot(data = epsc_nk1r, aes(x = factor(Case, level = level_order_epsc), y = Frequency, 
+                      fill = Case)) + 
+  geom_boxplot(position=position_dodge(0.9), colour = "grey20", alpha = 0.2) +
+  geom_dotplot(alpha = 0.5, color = "black", binaxis='y', stackdir='center',
+               position=position_jitterdodge(jitter.width=.2,  # <<- adjusted
+                                             dodge.width=0.9),  binwidth = .7, dotsize = .5) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5, size = 15, color = "grey20", face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),  
+        axis.title.x = element_text(color = "white", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 15, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        strip.text.x = element_text(size = 12, colour = "black", angle = 0),
+        strip.background = element_rect(
+          color="grey", fill="white", size=1.5, linetype="solid"
+        ),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold'),
+        title =element_text(size=13.5)) +
+  theme(legend.position="none") +
+  scale_fill_manual(values=c("orange", "red", "skyblue", "red")) +
+  #  ggtitle("Baseline potential - Verapamil") +
+  #  theme(plot.title = element_text(hjust=0.5, size = 16, face = "bold")) +
+#  ylim(100, 1000) +
+  ylab("EPSC frequency [Hz] \n")
+
+res.aov <- aov(Amplitude ~ Case, data = epsc_nk1r)
+summary(res.aov)
+TukeyHSD(res.aov)
+
+ggplot(data = epsc_nk1r, aes(x = factor(Case, level = level_order_epsc), y = Amplitude, 
+                             fill = Case)) + 
+  geom_boxplot(position=position_dodge(0.9), colour = "grey20", alpha = 0.2) +
+  geom_dotplot(alpha = 0.5, color = "black", binaxis='y', stackdir='center',
+               position=position_jitterdodge(jitter.width=.2,  # <<- adjusted
+                                             dodge.width=0.9),  binwidth = .7, dotsize = 1.5) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5, size = 15, color = "grey20", face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),  
+        axis.title.x = element_text(color = "white", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 15, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        strip.text.x = element_text(size = 12, colour = "black", angle = 0),
+        strip.background = element_rect(
+          color="grey", fill="white", size=1.5, linetype="solid"
+        ),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold'),
+        title =element_text(size=13.5)) +
+  theme(legend.position="none") +
+  scale_fill_manual(values=c("orange", "red", "skyblue", "red")) +
+  #  ggtitle("Baseline potential - Verapamil") +
+  #  theme(plot.title = element_text(hjust=0.5, size = 16, face = "bold")) +
+  #  ylim(100, 1000) +
+  ylab("EPSC amplitude [pA] \n")
+
+mini_nk1r <- epsc %>%
+  filter(Cond == "NK1R_minis")
+
+ggplot(data = mini_nk1r, aes(x = factor(Case, level = level_order_epsc), y = Frequency, 
+                             fill = Case)) + 
+  geom_boxplot(position=position_dodge(0.9), colour = "grey20", alpha = 0.2) +
+  geom_dotplot(alpha = 0.5, color = "black", binaxis='y', stackdir='center',
+               position=position_jitterdodge(jitter.width=.2,  # <<- adjusted
+                                             dodge.width=0.9),  binwidth = .7, dotsize = .4) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5, size = 15, color = "grey20", face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),  
+        axis.title.x = element_text(color = "white", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 15, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        strip.text.x = element_text(size = 12, colour = "black", angle = 0),
+        strip.background = element_rect(
+          color="grey", fill="white", size=1.5, linetype="solid"
+        ),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold'),
+        title =element_text(size=13.5)) +
+  theme(legend.position="none") +
+  scale_fill_manual(values=c("orange", "red", "skyblue", "red")) +
+  #  ggtitle("Baseline potential - Verapamil") +
+  #  theme(plot.title = element_text(hjust=0.5, size = 16, face = "bold")) +
+  #  ylim(100, 1000) +
+  ylab("miniEPSC frequency [Hz] \n")
+
+t.test(Frequency ~ Case, mini_nk1r)
+t.test(Amplitude ~ Case, mini_nk1r)
+
+ggplot(data = mini_nk1r, aes(x = factor(Case, level = level_order_epsc), y = Amplitude, 
+                             fill = Case)) + 
+  geom_boxplot(position=position_dodge(0.9), colour = "grey20", alpha = 0.2) +
+  geom_dotplot(alpha = 0.5, color = "black", binaxis='y', stackdir='center',
+               position=position_jitterdodge(jitter.width=.2,  # <<- adjusted
+                                             dodge.width=0.9),  binwidth = .7, dotsize = .7) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5, size = 15, color = "grey20", face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),  
+        axis.title.x = element_text(color = "white", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 15, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        strip.text.x = element_text(size = 12, colour = "black", angle = 0),
+        strip.background = element_rect(
+          color="grey", fill="white", size=1.5, linetype="solid"
+        ),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold'),
+        title =element_text(size=13.5)) +
+  theme(legend.position="none") +
+  scale_fill_manual(values=c("orange", "red", "skyblue", "red")) +
+  #  ggtitle("Baseline potential - Verapamil") +
+  #  theme(plot.title = element_text(hjust=0.5, size = 16, face = "bold")) +
+  #  ylim(100, 1000) +
+  ylab("miniEPSC amplitude [pA] \n")
+
+epsc_ran <- epsc %>%
+  filter(Cond == "Random_sEPSC") %>%
+  filter(Amplitude < 75)
+
+ggplot(data = epsc_ran, aes(x = factor(Case, level = level_order_epsc), y = Amplitude, 
+                             fill = Case)) + 
+  geom_boxplot(position=position_dodge(0.9), colour = "grey20", alpha = 0.2) +
+  geom_dotplot(alpha = 0.5, color = "black", binaxis='y', stackdir='center',
+               position=position_jitterdodge(jitter.width=.2,  # <<- adjusted
+                                             dodge.width=0.9),  binwidth = .7, dotsize = .9) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5, size = 15, color = "grey20", face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),  
+        axis.title.x = element_text(color = "white", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 15, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        strip.text.x = element_text(size = 12, colour = "black", angle = 0),
+        strip.background = element_rect(
+          color="grey", fill="white", size=1.5, linetype="solid"
+        ),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold'),
+        title =element_text(size=13.5)) +
+  theme(legend.position="none") +
+  scale_fill_manual(values=c("skyblue", "red")) +
+  #  ggtitle("Baseline potential - Verapamil") +
+  #  theme(plot.title = element_text(hjust=0.5, size = 16, face = "bold")) +
+  #  ylim(100, 1000) +
+  ylab("EPSC amplitude [pA] \n")
+
+t.test(Frequency ~ Case, epsc_ran)
+t.test(Amplitude ~ Case, epsc_ran)
+
+
+fap <- firing_examples_for_Seba_paper %>%
+  gather(Case, Voltage, -Time) %>%
+  mutate(Genotype = case_when(grepl("KO", Case) ~ "KO",
+                              grepl("WT", Case) ~ "WT")) %>%
+  mutate(Curr = case_when(grepl("10", Case) ~ "rheo+10pA",
+                              grepl("50", Case) ~ "rheo+50pA"))
+
+fap_wt <- fap %>%
+  filter(Genotype == "KO") %>%
+  filter(Time > .2) %>%
+  filter(Time < .8)
+
+ggplot(data = fap_wt, aes(x = Time, y = Voltage, color = Curr)) +
+  geom_line() +
+  facet_grid(rows = "Case") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5, size = 15, color = "grey20", face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),  
+        axis.title.x = element_text(color = "white", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 15, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        strip.text.x = element_text(size = 12, colour = "black", angle = 0),
+        strip.background = element_rect(
+          color="grey", fill="white", size=1.5, linetype="solid"
+        ),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold'),
+        title =element_text(size=13.5)) +
+  theme(legend.position="none")
+
+
+epsc <- EPSC_ex_anal %>%
+  slice(which(row_number() %% 5 == 1)) %>%
+  gather(Case, Current, -Time) %>%
+  mutate(Genotype = case_when(grepl("KO", Case) ~ "KO",
+                              grepl("WT", Case) ~ "WT"))
+fap_wt <- fap %>%
+  filter(Genotype == "KO") %>%
+  filter(Time > .2) %>%
+  filter(Time < .8)
+
+ggplot(data = epsc, aes(x = Time, y = Current, color = Genotype)) +
+  geom_line() +
+  facet_grid(rows = vars(Case)) +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5, size = 15, color = "grey20", face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),  
+        axis.title.x = element_text(color = "white", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 15, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        strip.text.x = element_text(size = 12, colour = "black", angle = 0),
+        strip.background = element_rect(
+          color="grey", fill="white", size=1.5, linetype="solid"
+        ),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold'),
+        title =element_text(size=13.5)) +
+  theme(legend.position="none")
+
+###############################################################################
+# KO CFA Pyruvate trce examples for Suppl Fig 6
+
+pyr <- KO.CFA.Pyruvate %>%
+  gather(Case, Voltage, -Time) %>%
+  mutate(Curr = case_when(grepl("10", Case) ~ "rheo+10pA",
+                          grepl("50", Case) ~ "rheo+50pA")) %>%
+  slice(which(row_number() %% 4 == 1))
+
+pyr_trace <- pyr %>%
+  filter(Time > .2) %>%
+  filter(Time < .8)
+
+ggplot(data = pyr_trace, aes(x = Time, y = Voltage, color = Curr)) +
+  geom_line() +
+  facet_grid(rows = "Case") +
+  theme_classic() +
+  theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust=.5, size = 15, color = "grey20", face = "plain"),
+        axis.text.y = element_text(color = "grey20", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),  
+        axis.title.x = element_text(color = "white", size = 15, angle = 0, hjust = .5, vjust = .5, face = "plain"),
+        axis.title.y = element_text(color = "grey20", size = 15, angle = 90, hjust = .5, vjust = .5, face = "plain"),
+        strip.text.x = element_text(size = 12, colour = "black", angle = 0),
+        strip.background = element_rect(
+          color="grey", fill="white", size=1.5, linetype="solid"
+        ),
+        legend.text=element_text(size=10.5),
+        legend.title=element_text(size=11.5, face='bold'),
+        title =element_text(size=13.5)) +
+  theme(legend.position="none")
+
+fap_plus <- WT_and_KO %>%
+  gather(Case, Voltage, -Time) %>%
+  mutate(Genotype = case_when(grepl("KO", Case) ~ "KO",
+                              grepl("WT", Case) ~ "WT")) %>%
+  mutate(Curr = case_when(grepl("10", Case) ~ "rheo+10pA",
+                          grepl("50", Case) ~ "rheo+50pA")) %>%
+  slice(which(row_number() %% 4 == 1))
+
